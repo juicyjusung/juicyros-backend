@@ -12,6 +12,7 @@ const getDBConnection = async () => {
       dbName: process.env.MONGODB_DB,
       useNewUrlParser: config.get('mongodb_settings.use_new_url_parser'),
       useCreateIndex: config.get('mongodb_settings.use_create_index'),
+      useUnifiedTopology: true,
     };
 
     // Establish a mongoose connection to mongodb
