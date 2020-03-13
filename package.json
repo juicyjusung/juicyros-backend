@@ -27,7 +27,7 @@
     "morgan": "~1.9.1",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",
-    "uuid": "^7.0.2",
+    "uuid4": "^1.1.4",
     "validator": "^12.2.0",
     "winston": "^3.2.1",
     "winston-mongodb": "^5.0.1"

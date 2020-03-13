@@ -18,7 +18,7 @@ import babelPolyfill from 'babel-polyfill';
 // Database connection imports
 import mongoose from 'mongoose';
 import passport from 'passport';
-import uuidv4 from 'uuid/v4';
+import uuid4 from 'uuid4';
 import session from 'express-session';
 import db from './database/dbConnection';
 
@@ -58,7 +58,7 @@ app.use(helmet());
 app.use(
   session({
     genid: req => {
-      return uuidv4(); // Use UUIDs for session IDs
+      return uuid4(); // Use UUIDs for session IDs
     },
     store: new MongoStore({
       mongooseConnection: mongoose.connection,
