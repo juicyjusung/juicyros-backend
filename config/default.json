@@ -1,0 +1,28 @@
+{
+    "mongodb_collections": {
+        "admins": "juicyros"
+    },
+    "mongodb_settings": {
+        "use_new_url_parser": true,
+        "use_create_index": true
+    },
+    "session": {
+        "name": "sessionID",
+        "max_age": 1800000
+    },
+    "allowed_origins": [
+        "http://localhost:8080"
+    ],
+    "token_validity": {
+        "password_reset_token_valid_for": 3600000
+    },
+    "logging": {
+        "mongodb_collection": "juicyros_log",
+        "combined_log_file_name": "combined.log",
+        "error_log_file_name": "error.log",
+        "exception_log_file_name": "exceptions.log"
+    },
+    "frontend_urls": {
+        "password_reset_base_url": ""
+    }
+}
