@@ -31,4 +31,4 @@ const userSchema = new mongoose.Schema({
 });
 
 // The first param is the collection name this model represents
-module.exports = mongoose.model(config.get('mongodb_collections.admins'), userSchema);
+module.exports = mongoose.model(config.get('mongodb_collections.user'), userSchema);

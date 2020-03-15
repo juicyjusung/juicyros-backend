@@ -1,6 +1,9 @@
 {
     "mongodb_collections": {
-        "admins": "juicyros"
+        "user": "user",
+        "userros": "userros",
+        "ros": "ros",
+        "pub": "pub"
     },
     "mongodb_settings": {
         "use_new_url_parser": true,
@@ -11,7 +14,8 @@
         "max_age": 1800000
     },
     "allowed_origins": [
-        "http://localhost:8080"
+        "http://localhost:8080",
+        "http://localhost:4425"
     ],
     "token_validity": {
         "password_reset_token_valid_for": 3600000

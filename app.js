@@ -24,8 +24,8 @@ import db from './database/dbConnection';
 
 // Router imports
 import indexRouter from './routes/index';
-import usersRouter from './routes/users';
 import securityRouter from './routes/security';
+import rosRouter from './routes/ros';
 
 /** *********************************************************** */
 // Imports for authentication
@@ -111,8 +111,8 @@ app.use(cors(corsOptions));
 /** *********************************************************** */
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
 app.use('/security', securityRouter);
+app.use('/ros', rosRouter)
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
