@@ -70,7 +70,7 @@ app.use(
     cookie: {
       httpOnly: true,
       maxAge: config.get('session.max_age'),
-      // secure: true, // Set this to true only after veniqa has a ssl enabled site
+      secure: process.env.NODE_ENV === 'production',
     },
   }),
 );
@@ -101,6 +101,7 @@ const corsOptions = {
     ],
   */
   origin: config.get('allowed_origins'),
+  // origin: 'http://localhost:8080',
   methods: ['GET, POST, OPTIONS, PUT, DELETE'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
@@ -112,7 +113,7 @@ app.use(cors(corsOptions));
 
 app.use('/', indexRouter);
 app.use('/security', securityRouter);
-app.use('/ros', rosRouter)
+app.use('/ros', rosRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
