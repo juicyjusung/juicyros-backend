@@ -5,7 +5,9 @@
   "type": "module",
   "main": "./app.js",
   "scripts": {
-    "start": "nodemon --exec babel-node ./bin/www"
+    "build": "rimraf build/ && babel ./ --out-dir build/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
+    "start": "npm install && npm run build && node ./build/bin/www",
+    "devstart": "nodemon --exec babel-node ./bin/www"
   },
   "dependencies": {
     "babel-core": "^6.26.3",
@@ -43,11 +45,12 @@
     "babel-preset-env": "^1.7.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-import": "^2.20.1",
     "eslint-plugin-jsx-a11y": "^6.2.3",
-    "eslint-config-prettier": "^6.10.0",
     "eslint-plugin-prettier": "^3.1.2",
     "eslint-plugin-react": "^7.19.0",
-    "prettier": "^1.19.1"
+    "prettier": "^1.19.1",
+    "rimraf": "^3.0.2"
   }
 }
