@@ -71,6 +71,7 @@ app.use(
       httpOnly: true,
       maxAge: config.get('session.max_age'),
       secure: process.env.NODE_ENV === 'production',
+      sameSite: 'none',
     },
   }),
 );
