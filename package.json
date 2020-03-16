@@ -7,7 +7,7 @@
   "scripts": {
     "build": "rimraf build/ && babel ./ --out-dir build/ --ignore ./node_modules,./.babelrc,./package.json,./npm-debug.log --copy-files",
     "start": "npm install && npm run build && node ./build/bin/www",
-    "devstart": "nodemon --exec babel-node ./bin/www",
+    "dev": "nodemon --exec babel-node ./bin/www",
     "heroku-prebuild": "export NPM_CONFIG_PRODUCTION=false; export NODE_ENV=; NPM_CONFIG_PRODUCTION=false NODE_ENV=development npm install --only=dev --dev",
     "heroku-postbuild": "export NPM_CONFIG_PRODUCTION=true; export NODE_ENV=production;"
   },
