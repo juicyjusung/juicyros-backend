@@ -1,6 +1,9 @@
 {
     "mongodb_collections": {
-        "admins": "juicyros"
+        "user": "user",
+        "userros": "userros",
+        "ros": "ros",
+        "pub": "pub"
     },
     "mongodb_settings": {
         "use_new_url_parser": true,
