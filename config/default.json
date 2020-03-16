@@ -15,7 +15,8 @@
     },
     "allowed_origins": [
         "http://localhost:8080",
-        "http://localhost:4425"
+        "http://localhost:4425",
+        "https://juicyros.netlify.com/"
     ],
     "token_validity": {
         "password_reset_token_valid_for": 3600000
