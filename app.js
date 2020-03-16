@@ -67,11 +67,12 @@ app.use(
     resave: false, // setting true forces a resave in store even if session not changed
     rolling: true, // setting true updates expiration with maxAge after every user request
     saveUninitialized: true, // setting true saves even unmodified sessions
+    proxy: true,
     cookie: {
       httpOnly: true,
       maxAge: config.get('session.max_age'),
       secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : false,
     },
   }),
 );
