@@ -11,8 +11,8 @@
         "max_age": 1800000
     },
     "allowed_origins": [
-        "http://localhost:8080",
-        "https://juicyros.netlify.com/"
+        "https://juicyros.netlify.com",
+        "http://localhost:8080"
     ],
     "token_validity": {
         "password_reset_token_valid_for": 3600000
