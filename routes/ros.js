@@ -9,5 +9,6 @@ router.use(passportAuth.isAuthenticated);
 
 router.route('/').get(rosController.getRos);
 router.route('/createRos').post(rosController.createRos);
+router.route('/removeRos').post(rosController.removeRos);
 
 module.exports = router;

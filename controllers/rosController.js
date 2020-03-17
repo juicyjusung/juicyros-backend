@@ -44,6 +44,20 @@ export default {
     }
   },
 
+  async removeRos(req, res, next) {
+    let response;
+    try {
+      const { _id } = req.body;
+      response = await rosService.removeRos(_id, req.user);
+      return res.status(response.httpStatus).send(response);
+    } catch (e) {
+      logger.error('Error in deleteRos Controller', { meta: e });
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ httpStatus: httpStatus.INTERNAL_SERVER_ERROR, status: 'failed', errorDetails: e });
+    }
+  },
+
   async addPub(req, res, next) {
     let response;
     try {

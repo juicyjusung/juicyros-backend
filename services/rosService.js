@@ -72,9 +72,7 @@ export default {
         userros.ros.push(ros);
         userros = await userros.save();
       }
-
-      const createdRos = Ros.findOne({ ros }).exec();
-      console.log('createdRos: ', createdRos);
+      const createdRos = await Ros.findOne({ _id: ros._id }).exec();
 
       result = createdRos
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: createdRos }
@@ -121,6 +119,36 @@ export default {
     }
   },
 
+  async removeRos(_id, userObj) {
+    let result = {};
+    try {
+      const user = await User.findOne({ email: userObj.email }).exec();
+      if (!user) {
+        result = {
+          httpStatus: httpStatus.UNAUTHORIZED,
+          status: 'failed',
+          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
+        };
+        return result;
+      }
+      await Ros.findByIdAndDelete({ _id }).exec();
+      // TODO: 해당ROS에 등록된 childred 데이터 삭제 로직 필요 - 2020-03-18, 오전 1:36
+      const userros = await UserRos.findOne({ user }).populate({ path: 'ros' });
+      result = userros
+        ? { httpStatus: httpStatus.OK, status: 'successful', responseData: userros }
+        : {
+            httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            status: 'failed',
+            errorDetails: httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
+          };
+      return result;
+    } catch (e) {
+      logger.error('Error in createRos Service', { meta: e });
+      result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
+      return result;
+    }
+  },
+
   async editRos(rosObj, userObj) {
     let result = {};
     try {
@@ -155,7 +183,6 @@ export default {
         return result;
       }
       ros.save();
-      console.log(ros);
 
       result = ros
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
