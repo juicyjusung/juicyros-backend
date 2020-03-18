@@ -58,10 +58,11 @@ export default {
     }
   },
 
-  async addPub(req, res, next) {
+  async createPub(req, res, next) {
     let response;
     try {
-      response = await rosService.addPub(req.body, req.user);
+      console.log('req.body: ', req.body);
+      response = await rosService.createPub(req.body.pub_data, req.body._id, req.user);
       return res.status(response.httpStatus).send(response);
     } catch (e) {
       logger.error('Error in addPub Controller', { meta: e });

@@ -199,7 +199,7 @@ export default {
     }
   },
 
-  async addPub(pubObj, rosid, userObj) {
+  async createPub(pub_data, _id, userObj) {
     let result = {};
     try {
       const user = await User.findOne({ email: userObj.email }).exec();
@@ -211,7 +211,7 @@ export default {
         };
         return result;
       }
-      const ros = Ros.findById(rosid).exec();
+      const ros = await Ros.findById(_id).exec();
       if (!ros) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -221,11 +221,13 @@ export default {
         return result;
       }
       const pub = new Pub({
-        pub_name: pubObj.pubName,
-        topic_name: pubObj.topicName,
-        message_type: pubObj.msgType,
-        message: pubObj.msg,
+        pub_name: pub_data.pub_name,
+        topic_name: pub_data.topic_name,
+        message_type: pub_data.message_type,
+        message: pub_data.message,
       });
+
+      console.log(ros);
 
       ros.pub_data.push(pub);
       ros.save();
@@ -239,7 +241,7 @@ export default {
           };
       return result;
     } catch (e) {
-      logger.error('Error in createRos Service', { meta: e });
+      logger.error('Error in createPub Service', { meta: e });
       result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
       return result;
     }

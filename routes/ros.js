@@ -11,4 +11,6 @@ router.route('/').get(rosController.getRos);
 router.route('/createRos').post(rosController.createRos);
 router.route('/removeRos').post(rosController.removeRos);
 
+router.route('/createPub').post(rosController.createPub);
+
 module.exports = router;

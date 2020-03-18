@@ -11,7 +11,7 @@
     },
     "session": {
         "name": "sessionID",
-        "max_age": 1800000
+        "max_age": 3600000
     },
     "allowed_origins": [
         "http://localhost:8080",
