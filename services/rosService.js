@@ -6,43 +6,6 @@ import User from '../database/models/user';
 import Pub from '../database/models/pub';
 
 export default {
-  /*
-  async createRos(connectionName, url, userObj) {
-    let result = {};
-    try {
-      const user = await User.findOne({ email: userObj.email }).exec();
-      if (!user) {
-        result = {
-          httpStatus: httpStatus.UNAUTHORIZED,
-          status: 'failed',
-          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
-        };
-        return result;
-      }
-      const ros = new Ros({
-        connection_name: connectionName,
-        url,
-      });
-      let ross = new Ross({
-        user,
-        ros: [ros],
-      });
-      ross = await ros.save();
-      result = ros
-        ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
-        : {
-            httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
-            status: 'failed',
-            errorDetails: httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
-          };
-      return result;
-    } catch (e) {
-      logger.error('Error in createRos Service', { meta: e });
-      result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
-      return result;
-    }
-  },
-   */
   async createRos(connectionName, url, userObj) {
     let result = {};
     try {
@@ -163,16 +126,6 @@ export default {
       }
 
       // eslint-disable-next-line no-underscore-dangle
-      // const ros = Ros.findById(rosObj._id);
-      // if (!ros) {
-      //   result = {
-      //     httpStatus: httpStatus.UNAUTHORIZED,
-      //     status: 'failed',
-      //     errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
-      //   };
-      //   return result;
-      // }
-      // eslint-disable-next-line no-underscore-dangle
       const ros = Ros.findByIdAndUpdate(rosObj._id, { connection_name: rosObj.connectionName, url: rosObj.url });
       if (!ros) {
         result = {
@@ -199,7 +152,7 @@ export default {
     }
   },
 
-  async createPub(pub_data, _id, userObj) {
+  async addPub(pubItem, rosObj, userObj) {
     let result = {};
     try {
       const user = await User.findOne({ email: userObj.email }).exec();
@@ -211,7 +164,7 @@ export default {
         };
         return result;
       }
-      const ros = await Ros.findById(_id).exec();
+      const ros = await Ros.findById({ _id: rosObj._id }).exec();
       if (!ros) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -221,16 +174,55 @@ export default {
         return result;
       }
       const pub = new Pub({
-        pub_name: pub_data.pub_name,
-        topic_name: pub_data.topic_name,
-        message_type: pub_data.message_type,
-        message: pub_data.message,
+        pub_name: pubItem.pub_name,
+        topic_name: pubItem.topic_name,
+        message_type: pubItem.message_type,
+        message: pubItem.message,
       });
-
-      console.log(ros);
 
       ros.pub_data.push(pub);
       ros.save();
+
+      result = ros
+        ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
+        : {
+            httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            status: 'failed',
+            errorDetails: httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
+          };
+      return result;
+    } catch (e) {
+      logger.error('Error in createPub Service', { meta: e });
+      result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
+      return result;
+    }
+  },
+
+  async removePub(pubItem, rosObj, userObj) {
+    let result = {};
+    try {
+      const user = await User.findOne({ email: userObj.email }).exec();
+      if (!user) {
+        result = {
+          httpStatus: httpStatus.UNAUTHORIZED,
+          status: 'failed',
+          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
+        };
+        return result;
+      }
+
+      let ros = await Ros.findById({ _id: rosObj._id }).exec();
+      ros = ros.pub_data.filter(pub => pub._id !== pubItem._id);
+      ros.save();
+      if (!ros) {
+        result = {
+          httpStatus: httpStatus.UNAUTHORIZED,
+          status: 'failed',
+          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
+        };
+        return result;
+      }
+      console.log(ros);
 
       result = ros
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }

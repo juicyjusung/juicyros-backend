@@ -58,11 +58,23 @@ export default {
     }
   },
 
-  async createPub(req, res, next) {
+  async editRos(req, res, next) {
     let response;
     try {
-      console.log('req.body: ', req.body);
-      response = await rosService.createPub(req.body.pub_data, req.body._id, req.user);
+      response = await rosService.editRos(req.body.ros, req.user);
+      return res.status(response.httpStatus).send(response);
+    } catch (e) {
+      logger.error('Error in editRos Controller', { meta: e });
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ httpStatus: httpStatus.INTERNAL_SERVER_ERROR, status: 'failed', errorDetails: e });
+    }
+  },
+
+  async addPub(req, res, next) {
+    let response;
+    try {
+      response = await rosService.addPub(req.body.pubItem, req.body.ros, req.user);
       return res.status(response.httpStatus).send(response);
     } catch (e) {
       logger.error('Error in addPub Controller', { meta: e });
@@ -72,10 +84,10 @@ export default {
     }
   },
 
-  async editRos(req, res, next) {
+  async removePub(req, res, next) {
     let response;
     try {
-      response = await rosService.editRos(req.body.ros, req.user);
+      response = await rosService.removePub(req.body.pubItem, req.body.ros, req.user);
       return res.status(response.httpStatus).send(response);
     } catch (e) {
       logger.error('Error in editRos Controller', { meta: e });
