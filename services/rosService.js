@@ -9,7 +9,7 @@ export default {
   async createRos(connectionName, url, userObj) {
     let result = {};
     try {
-      const user = await User.findOne({ email: userObj.email }).exec();
+      const user = await User.findOne({ email: userObj.email });
       if (!user) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -24,7 +24,7 @@ export default {
       });
       ros = await ros.save();
 
-      let userros = await UserRos.findOne({ user }).exec();
+      let userros = await UserRos.findOne({ user });
       if (!userros) {
         userros = new UserRos({
           user,
@@ -35,7 +35,7 @@ export default {
         userros.ros.push(ros);
         userros = await userros.save();
       }
-      const createdRos = await Ros.findOne({ _id: ros._id }).exec();
+      const createdRos = await Ros.findOne({ _id: ros._id });
 
       result = createdRos
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: createdRos }
@@ -65,7 +65,8 @@ export default {
         return result;
       }
 
-      const userros = await UserRos.findOne({ user }).populate({ path: 'ros' });
+      const userros = await UserRos.findOne({ user }).populate({ path: 'ros', populate: { path: 'pub_data' } });
+      console.log('userros: ', userros);
 
       result = userros
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: userros }
@@ -96,7 +97,7 @@ export default {
       }
       await Ros.findByIdAndDelete({ _id }).exec();
       // TODO: 해당ROS에 등록된 childred 데이터 삭제 로직 필요 - 2020-03-18, 오전 1:36
-      const userros = await UserRos.findOne({ user }).populate({ path: 'ros' });
+      const userros = await UserRos.findOne({ user }).populate({ path: 'ros', populate: { path: 'pub_data' } });
       result = userros
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: userros }
         : {
@@ -135,7 +136,6 @@ export default {
         };
         return result;
       }
-      ros.save();
 
       result = ros
         ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
@@ -155,7 +155,7 @@ export default {
   async addPub(pubItem, rosObj, userObj) {
     let result = {};
     try {
-      const user = await User.findOne({ email: userObj.email }).exec();
+      const user = await User.findOne({ email: userObj.email });
       if (!user) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -164,7 +164,7 @@ export default {
         };
         return result;
       }
-      const ros = await Ros.findById({ _id: rosObj._id }).exec();
+      const ros = await Ros.findById({ _id: rosObj._id });
       if (!ros) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -180,11 +180,58 @@ export default {
         message: pubItem.message,
       });
 
+      await pub.save();
       ros.pub_data.push(pub);
-      ros.save();
+      await ros.save();
 
-      result = ros
-        ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
+      const responseData = await Ros.findById({ _id: rosObj._id }).populate({ path: 'pub_data' });
+      result = responseData
+        ? { httpStatus: httpStatus.OK, status: 'successful', responseData }
+        : {
+            httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
+            status: 'failed',
+            errorDetails: httpStatus.getStatusText(httpStatus.INTERNAL_SERVER_ERROR),
+          };
+      return result;
+    } catch (e) {
+      logger.error('Error in createPub Service', { meta: e });
+      result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
+      return result;
+    }
+  },
+
+  async editPub(pubItem, rosObj, userObj) {
+    let result = {};
+    try {
+      const user = await User.findOne({ email: userObj.email });
+      if (!user) {
+        result = {
+          httpStatus: httpStatus.UNAUTHORIZED,
+          status: 'failed',
+          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
+        };
+        return result;
+      }
+
+      await Pub.findByIdAndUpdate(pubItem._id, {
+        pub_name: pubItem.pub_name,
+        topic_name: pubItem.topic_name,
+        message_type: pubItem.message_type,
+        message: pubItem.message,
+      });
+
+      const responseData = await Ros.findById({ _id: rosObj._id }).populate({ path: 'pub_data' });
+      if (!responseData) {
+        result = {
+          httpStatus: httpStatus.UNAUTHORIZED,
+          status: 'failed',
+          errorDetails: httpStatus.getStatusText(httpStatus.UNAUTHORIZED),
+        };
+        return result;
+      }
+
+      result = responseData
+        ? { httpStatus: httpStatus.OK, status: 'successful', responseData }
         : {
             httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
             status: 'failed',
@@ -201,7 +248,7 @@ export default {
   async removePub(pubItem, rosObj, userObj) {
     let result = {};
     try {
-      const user = await User.findOne({ email: userObj.email }).exec();
+      const user = await User.findOne({ email: userObj.email });
       if (!user) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -211,9 +258,7 @@ export default {
         return result;
       }
 
-      let ros = await Ros.findById({ _id: rosObj._id }).exec();
-      ros = ros.pub_data.filter(pub => pub._id !== pubItem._id);
-      ros.save();
+      const ros = await Ros.findById({ _id: rosObj._id });
       if (!ros) {
         result = {
           httpStatus: httpStatus.UNAUTHORIZED,
@@ -222,10 +267,15 @@ export default {
         };
         return result;
       }
-      console.log(ros);
+
+      await ros.pub_data.pull(pubItem._id);
+      await ros.save();
+      await Pub.findById({ _id: pubItem._id }).remove();
+
+      const responseData = await Ros.findById({ _id: rosObj._id }).populate({ path: 'pub_data' });
 
       result = ros
-        ? { httpStatus: httpStatus.OK, status: 'successful', responseData: ros }
+        ? { httpStatus: httpStatus.OK, status: 'successful', responseData }
         : {
             httpStatus: httpStatus.INTERNAL_SERVER_ERROR,
             status: 'failed',
@@ -233,7 +283,7 @@ export default {
           };
       return result;
     } catch (e) {
-      logger.error('Error in createPub Service', { meta: e });
+      logger.error('Error in removePub Service', { meta: e });
       result = { httpStatus: httpStatus.BAD_REQUEST, status: 'failed', errorDetails: e };
       return result;
     }

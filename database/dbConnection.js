@@ -30,9 +30,8 @@ const getDBConnection = async () => {
 };
 
 // Initializing the models and registering them to their models
-require('./models/user');
 require('./models/userros');
-require('./models/pub');
-
+require('./models/user');
+//
 // Exporting the connection
 exports.dbConnection = () => getDBConnection();

@@ -84,6 +84,19 @@ export default {
     }
   },
 
+  async editPub(req, res, next) {
+    let response;
+    try {
+      response = await rosService.editPub(req.body.pubItem, req.body.ros, req.user);
+      return res.status(response.httpStatus).send(response);
+    } catch (e) {
+      logger.error('Error in editPub Controller', { meta: e });
+      return res
+        .status(httpStatus.INTERNAL_SERVER_ERROR)
+        .send({ httpStatus: httpStatus.INTERNAL_SERVER_ERROR, status: 'failed', errorDetails: e });
+    }
+  },
+
   async removePub(req, res, next) {
     let response;
     try {

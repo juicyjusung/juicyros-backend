@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
 import config from 'config';
-import pubSchema from '../schemas/pub';
 
 const { Schema } = mongoose;
 
@@ -13,7 +12,13 @@ const rosSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  pub_data: [pubSchema],
+  pub_data: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: config.get('mongodb_collections.pub'),
+      required: true,
+    },
+  ],
 });
 
 // The first param is the collection name this model represents
