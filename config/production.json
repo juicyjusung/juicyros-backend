@@ -14,6 +14,7 @@
         "max_age": 1800000
     },
     "allowed_origins": [
+        "http://juicy-text.com",
         "https://juicyros.netlify.com",
         "http://localhost:8080"
     ],
