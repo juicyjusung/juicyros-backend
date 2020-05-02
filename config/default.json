@@ -15,7 +15,7 @@
     },
     "allowed_origins": [
         "http://localhost:8080",
-        "http://juicy-text.com",
+        "https://juicy-text.com",
         "https://juicyros.netlify.com"
     ],
     "token_validity": {
