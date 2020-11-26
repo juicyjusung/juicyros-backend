@@ -16,6 +16,7 @@
     "allowed_origins": [
         "https://juicy-text.com",
         "https://www.juicy-text.com",
+        "https://juicytext.netlify.com",
         "https://juicyros.netlify.com",
         "http://localhost:8080"
     ],
